@@ -1,0 +1,49 @@
+#!/usr/bin/env python3
+import os
+import unittest
+import requests
+from bs4 import BeautifulSoup
+from flask_login import logout_user
+
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+
+server_address="http://127.0.0.1:5000"
+server_login=server_address + "/login"
+user_register = server_address + "/register"
+spell_check_url = server_address + "/spell_check"
+
+def getCsrfToken(url, session):
+    soup = BeautifulSoup(session.get(url).content, "html.parser")
+    return soup.find('input', dict(name='csrf_token'))['value']
+
+def getElementById(text, eid):
+    soup = BeautifulSoup(text, "html.parser")
+    result = soup.find(id=eid)
+    return result
+
+def register(uname, pword, twofactor, session=None):
+    if session is None:
+        session = requests.Session()
+        session.verify = False
+    csrftoken = getCsrfToken(user_register, session)
+    test_creds = {"uname": uname, "pword": pword, "pword2": twofactor, "csrf_token": csrftoken}
+    r = session.post(user_register, data=test_creds)
+    success = getElementById(r.text, "success")
+    logout_user()
+    db.session.commit()
+    if success is None:
+        return False
+    return "Success" in success.text
+
+class FeatureTest(unittest.TestCase):
+
+    def test_registration(self):
+        # Default admin password passed in as ENV from Kubernetes
+        ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD') or "supersecret"
+        resp = register("admin",ADMIN_PASSWORD,"12345678901")
+        self.assertTrue(resp, "Admin account created successfully.")
+
+if __name__ == '__main__':
+    unittest.main()
+

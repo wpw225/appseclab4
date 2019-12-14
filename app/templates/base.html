@@ -1,0 +1,24 @@
+<html>
+    <head>
+        {% if title %}
+        <title>{{ title }} - Web Spell Checker</title>
+        {% else %}
+        <title>Application Security Assignment 2</title>
+        {% endif %}
+    </head>
+    <body>
+        <div>
+        	Web Spell Checker Menu:
+      		<a href="{{ url_for('index') }}">Home</a>
+		<a href="{{ url_for('history') }}">Query History</a>
+		<a href="{{ url_for('login_history') }}">Login History</a>
+        	{% if current_user.is_anonymous %}
+        	<a href="{{ url_for('login') }}">Login</a>
+        	{% else %}
+        	<a href="{{ url_for('logout') }}">Logout</a>
+        	{% endif %}
+        </div>
+        <hr>
+        {% block content %}{% endblock %}
+    </body>
+</html>

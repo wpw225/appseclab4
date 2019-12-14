@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<ul>
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+</ul>
+{% endif %}
+{% endwith %}
+
+
+    {% if post %}
+    <h1>Query Review</h1>
+
+    <p id="queryid">
+    	Query ID: {{ post.id }}
+    </p>
+    <p id="username">
+        Username: {{ current_user.username }}
+    </p>
+    <p id="querytext">
+        Query Text: {{ post.body }}
+    </p>
+    <p id="queryresults">
+        Query Result: {{ post.result }}
+    </p>
+    {% else %}
+
+    <h1>No Such Query Number</h1>
+
+    {% endif %}
+
+{% endblock %}

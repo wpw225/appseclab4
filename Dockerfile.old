@@ -1,0 +1,17 @@
+from alpine:latest
+
+RUN apk add --no-cache python3-dev \
+	&& pip3 install --upgrade pip
+RUN apk add --no-cache make build-base libffi-dev openssl-dev 
+
+WORKDIR /app
+
+COPY . /app
+
+RUN pip3 --no-cache-dir install -r requirements.txt
+
+EXPOSE 5000
+
+#ENTRYPOINT ["python3"]
+#CMD ["start_app.py"]
+ENTRYPOINT ["sh"]

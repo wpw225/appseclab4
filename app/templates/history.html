@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<ul>
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+</ul>
+{% endif %}
+{% endwith %}
+
+
+    {% if form %}
+    <h1>Spellcheck History Search</h1>
+    <form action="" method="post" value="" autocomplete="off">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.uname.label }}<br>
+            {{ form.uname(size=32) }}<br>
+            {% for error in form.uname.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form>
+    {% else %}
+
+    <h1>Spellcheck History Search Result</h1>
+
+    <p id=numqueries>
+    	Number of Queries: {{ count }}
+    </p>
+    {% for post in posts %}
+    <p id=query{{ post.id }}>
+    <a href="http://127.0.0.1:5000/history/query{{ post.id }}">
+	{{ post.author.username }} spellchecks: <b>{{ post.body }}</b>
+	results: <b>{{ post.result }}</b>
+    </a>
+    </p>
+    {% endfor %}
+
+    {% endif %}
+
+{% endblock %}
